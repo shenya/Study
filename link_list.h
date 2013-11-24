@@ -10,5 +10,8 @@ typedef struct link_list
 
 extern LINK_LIST *link_head;
 extern LINK_LIST *link_init(LINK_LIST **head);
-extern LINK_LIST *link_insert(LINK_LIST *head, int *red, int blue);
+extern LINK_LIST *link_insert(LINK_LIST *head, int *red, int length);
+extern void link_print(LINK_LIST *head);
+extern int award_get(int flag);
+extern int link_compare(LINK_LIST *head, int *card, int length);
 #endif
