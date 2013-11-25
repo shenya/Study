@@ -4,7 +4,7 @@
 #include "link_list.h"
 
 
-#define VALUE_MIN 45
+#define VALUE_MIN 20
 
 #define STR_SIZE 100
 #define RED_MAX 33
@@ -12,7 +12,7 @@
 
 #define RANGE 0
 
-int times[] = {1, 3, 7, 10, 7, 3 , 1};
+int times[] = {1, 2, 8, 10, 6, 4 , 2};
 extern int fd;
 
 int read_file(const char *file)
