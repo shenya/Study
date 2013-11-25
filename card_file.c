@@ -2,11 +2,18 @@
 #include <string.h>
 
 #include "link_list.h"
+
+
+#define VALUE_MIN 130
+
 #define STR_SIZE 100
 #define RED_MAX 33
 #define BLUE_MAX 16
 
 #define RANGE 0
+
+int times[] = {1, 5, 30, 25, 10, 3 , 1};
+extern int fd;
 
 int read_file(const char *file)
 {
@@ -34,12 +41,13 @@ int read_file(const char *file)
 
 	return 0;	
 }
-int write_file(int fd, int *data, int length, int flag)
+int write_file(int fd, int *data, int length, int flag, int value_sum)
 {
 	int i;
 	char num_str[32];
 	char str_space[] = " ";
 	char str_enter[] = "\n";
+	char *F_end;
 
 	for(i=0; i<length; i++)
 	{
@@ -54,9 +62,12 @@ int write_file(int fd, int *data, int length, int flag)
 			}
 			write(fd, num_str, strlen(num_str));
 	}
-	sprintf(num_str, "Value::%d\n", flag);
+	sprintf(num_str, "Value::%d value_sum: %d", flag, value_sum);
+	F_end = num_str + strlen(num_str);
+	*F_end++ = '\n';
+	*F_end = '\0';
 	write(fd, num_str, strlen(num_str));
-	//	write(fd, str_space, strlen(str_space));
+
 	return 0;
 }
 int get_data_from_str(int *card_data, int length,  const char *str)
@@ -84,11 +95,25 @@ int get_data_from_str(int *card_data, int length,  const char *str)
 
 }
 
+int card_flag_parse(int flag)
+{
+	int value_sum = 0;
+	int cnt  = 0;
+
+	while(flag > 0)
+	{
+		value_sum += (flag%10) * times[cnt++];
+		flag = flag/10;	
+	}
+
+	return value_sum;
+}
 int card_generate(int *data, int length)
 {
 	int i, j, k, m, n, s, t;
 	int r = 0;
 	int flag = 0;
+	int value_sum;
 
 	for(i=1; i<RED_MAX-4; i++)  //max red is 28
 	{
@@ -116,8 +141,12 @@ int card_generate(int *data, int length)
 							 flag =	link_compare(link_head, data, 7);
 							 if(flag != 0)
 							 {
-							 		printf("flag = %d\n", flag);
-#if 1
+							 		//printf("flag = %d\n", flag);
+
+								 value_sum = card_flag_parse(flag);
+								 if(value_sum > VALUE_MIN)
+										write_file(fd, data, 7, flag, value_sum);
+#if 0
 							for(r=0; r<7; r++)
 							printf("%5d", data[r]);
 							printf("\n");
