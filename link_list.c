@@ -156,9 +156,9 @@ int link_compare(LINK_LIST *head, int *card, int length)
 		p = p->next;
 	}
 
-	printf("award_get is %d\n", award);
+//	printf("award_get is %d\n", award);
 
-	return 0;
+	return award;
 }
 
 int award_get(int flag)

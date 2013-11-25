@@ -1,6 +1,12 @@
 #include <stdio.h>
+#include <string.h>
+
 #include "link_list.h"
 #define STR_SIZE 100
+#define RED_MAX 33
+#define BLUE_MAX 16
+
+#define RANGE 0
 
 int read_file(const char *file)
 {
@@ -28,7 +34,31 @@ int read_file(const char *file)
 
 	return 0;	
 }
+int write_file(int fd, int *data, int length, int flag)
+{
+	int i;
+	char num_str[32];
+	char str_space[] = " ";
+	char str_enter[] = "\n";
 
+	for(i=0; i<length; i++)
+	{
+			if(i != 6)
+			{
+				sprintf(num_str, "  %d", data[i]);
+			}
+			else
+			{
+				
+				sprintf(num_str, "---%d   ", data[i]);
+			}
+			write(fd, num_str, strlen(num_str));
+	}
+	sprintf(num_str, "Value::%d\n", flag);
+	write(fd, num_str, strlen(num_str));
+	//	write(fd, str_space, strlen(str_space));
+	return 0;
+}
 int get_data_from_str(int *card_data, int length,  const char *str)
 {
 	int i;
@@ -52,4 +82,59 @@ int get_data_from_str(int *card_data, int length,  const char *str)
 
 	return 0;
 
+}
+
+int card_generate(int *data, int length)
+{
+	int i, j, k, m, n, s, t;
+	int r = 0;
+	int flag = 0;
+
+	for(i=1; i<RED_MAX-4; i++)  //max red is 28
+	{
+		data[0] = i;
+		for(j=i+1; j<RED_MAX-3; j++)
+		{
+		  data[1] = j;
+			for(k=j+1; k<RED_MAX-2; k++)
+			{
+			  data[2] = k;
+				for(m=k+1; m<RED_MAX-1; m++)
+				{
+					data[3] = m;
+					for(n=m+1; n<RED_MAX-0; n++)
+					{
+						data[4] = n;
+						for(s=n+1; s<RED_MAX+1; s++)
+						{
+							data[5] = s;
+							
+							for(t=1; t<17; t++)
+							{
+							  data[6] = t;
+
+							 flag =	link_compare(link_head, data, 7);
+							 if(flag != 0)
+							 {
+							 		printf("flag = %d\n", flag);
+#if 1
+							for(r=0; r<7; r++)
+							printf("%5d", data[r]);
+							printf("\n");
+							sleep(1);
+#endif
+							 }
+							}
+
+							//if(r == 7)
+								//r = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	return 0;
 }

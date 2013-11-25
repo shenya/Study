@@ -2,5 +2,7 @@
 #define __CARD_FILE_H__
 
 extern int read_file(const char *file);
+extern int card_generate(int *data, int length);
+extern int write_file(int fd, int *data, int length, int flag);
 
 #endif
