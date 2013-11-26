@@ -4,7 +4,7 @@
 #include "link_list.h"
 
 
-#define VALUE_MIN 38
+#define VALUE_MIN 35
 
 #define STR_SIZE 100
 #define RED_MAX 33
@@ -53,21 +53,23 @@ int write_file(int fd, int *data, int length, int flag, int value_sum)
 	{
 			if(i != 6)
 			{
-				sprintf(num_str, "  %d", data[i]);
+				sprintf(num_str, "%d ", data[i]);
 			}
 			else
 			{
 				
-				sprintf(num_str, "---%d   ", data[i]);
+				sprintf(num_str, "+%d", data[i]);
 			}
 			write(fd, num_str, strlen(num_str));
 	}
-	sprintf(num_str, "Value::%d value_sum: %d", flag, value_sum);
+#if 1
+	//sprintf(num_str, "Value::%d value_sum: %d", flag, value_sum);
+	sprintf(num_str, "");
 	F_end = num_str + strlen(num_str);
 	*F_end++ = '\n';
 	*F_end = '\0';
 	write(fd, num_str, strlen(num_str));
-
+#endif
 	return 0;
 }
 int get_data_from_str(int *card_data, int length,  const char *str)
