@@ -4,7 +4,7 @@
 #include "link_list.h"
 
 
-#define VALUE_MIN 35
+#define VALUE_MIN 43
 
 #define STR_SIZE 100
 #define RED_MAX 33
@@ -12,6 +12,7 @@
 
 #define RANGE 0
 
+int card_cnt = 0;
 int times[] = {1, 2, 8, 12, 6, 3 , 4};
 extern int fd;
 
@@ -147,7 +148,12 @@ int card_generate(int *data, int length)
 
 								 value_sum = card_flag_parse(flag);
 								 if(value_sum > VALUE_MIN)
+								 {
 										write_file(fd, data, 7, flag, value_sum);
+										card_cnt++;
+										if(card_cnt == 40)
+											goto lable;
+									}
 #if 0
 							for(r=0; r<7; r++)
 							printf("%5d", data[r]);
@@ -165,7 +171,7 @@ int card_generate(int *data, int length)
 			}
 		}
 	}
-
+lable:
 
 	return 0;
 }
