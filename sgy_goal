@@ -1,4 +1,9 @@
-  1  2  3  26  29  31---3   Value::349 value_sum: 41
+  :2013-1126
+
+	value:38
+	{1, 2, 8, 12, 6, 3, 4}
+	
+	1  2  3  26  29  31---3   Value::349 value_sum: 41
   1  2  4  5  22  29---6   Value::289 value_sum: 41
   1  2  5  12  24  29---8   Value::359 value_sum: 43
   1  2  5  15  22  29---6   Value::289 value_sum: 41

@@ -4,7 +4,7 @@
 #include "link_list.h"
 
 
-#define VALUE_MIN 20
+#define VALUE_MIN 38
 
 #define STR_SIZE 100
 #define RED_MAX 33
@@ -12,7 +12,7 @@
 
 #define RANGE 0
 
-int times[] = {1, 2, 8, 10, 6, 4 , 2};
+int times[] = {1, 2, 8, 12, 6, 3 , 4};
 extern int fd;
 
 int read_file(const char *file)
@@ -25,7 +25,7 @@ int read_file(const char *file)
 	while(fgets(str, STR_SIZE, fp) != NULL)
 	{
 
-		printf("%s\n", str);
+//		printf("%s\n", str);
 
 		get_data_from_str(card_data, 7, str);
 		link_insert(link_head, card_data, 7);
