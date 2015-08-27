@@ -2,5 +2,6 @@
 #define __SORT_ALGORITHM_H__
 
 extern void bubble_sort(int *a, int size);
+extern void insert_sort(int *a, int size);
 
 #endif
