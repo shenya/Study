@@ -56,3 +56,25 @@ void select_sort(int a[], int size)
     }
 }
 
+/* This is shell sort */
+void shell_sort(int a[], int size)
+{
+    int i, j, k;
+    int temp;
+
+    k = size/2;
+
+    while(k >= 1) {
+        for (i = k; i < size; i++) {
+            temp = a[i];
+            j = i - k;
+            while (j >= 0 && a[j] > temp) {
+                a[j + k] = a[j];
+                j = j - k;
+            }
+            a[j + k] = temp;
+        }
+
+        k = k/2;
+    }
+}
