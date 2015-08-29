@@ -33,3 +33,26 @@ void insert_sort(int a[], int size)
         a[j + 1] = temp;
     }
 }
+
+/* This is selection sort */
+void select_sort(int a[], int size)
+{
+    int i, j;
+    int index;
+    int temp;
+
+    for (i = 0; i < size -1; i++) {
+        index = i;
+        for(j = i + 1; j < size; j++) {
+            if (a[j] < a[index]) {
+                index = j;
+            }
+        }
+        if (index != i) {
+            temp = a[i];
+            a[i] = a[index];
+            a[index] = temp;
+        }
+    }
+}
+

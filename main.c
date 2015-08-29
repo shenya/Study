@@ -37,7 +37,8 @@ int main(void)
     init_array();
     show_array();
 //    bubble_sort(array, NUM);
-    insert_sort(array, NUM);
+//   insert_sort(array, NUM);
+    select_sort(array, NUM);
     show_array();
     printf("hello world\n");
     return 0;
