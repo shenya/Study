@@ -5,5 +5,6 @@ extern void bubble_sort(int *a, int size);
 extern void insert_sort(int *a, int size);
 extern void select_sort(int *a, int size);
 extern void shell_sort(int *a, int size);
+extern void quick_sort(int *a, int left, int right);
 
 #endif

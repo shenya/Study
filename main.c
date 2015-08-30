@@ -39,7 +39,8 @@ int main(void)
 //    bubble_sort(array, NUM);
 //   insert_sort(array, NUM);
 //    select_sort(array, NUM);
-    shell_sort(array, NUM);
+//    shell_sort(array, NUM);
+    quick_sort(array, 0, NUM - 1);
     show_array();
     printf("hello world\n");
     return 0;

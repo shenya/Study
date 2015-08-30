@@ -78,3 +78,31 @@ void shell_sort(int a[], int size)
         k = k/2;
     }
 }
+
+/* This is quick sort */
+void quick_sort(int a[], int left, int right)
+{
+    int i, j, key;
+    i = left;
+    j = right;
+
+    key = a[i];
+
+    if (left >= right)
+        return;
+
+    while (i < j) {
+
+        while (j > i && a[j] >= key)
+            j--;
+        a[i] = a[j];
+
+        while (i < j && a[i] <= key)
+            i++;
+        a[j] = a[i];
+    }
+
+    a[i] = key;
+    quick_sort(a, left, i - 1);
+    quick_sort(a, i + 1, right);
+}
