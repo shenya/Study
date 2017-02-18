@@ -104,6 +104,7 @@ int link_list_delete_by_number(int number)
 void *func(void *arg)
 {
     int thread_number = 0;
+    int flag = 0;
 
     if (NULL == arg)
     {
@@ -119,7 +120,16 @@ void *func(void *arg)
         pthread_mutex_lock(&g_data.mutex);
         printf("th number: %d, number: %d\n", thread_number,
                 g_data.num++);
+        if (g_data.num > 5)
+        {
+            flag = 1;
+        }
         pthread_mutex_unlock(&g_data.mutex);
+
+        if (flag)
+        {
+            pthread_exit((void *)thread_number);
+        }
     }
 }
 
@@ -129,8 +139,13 @@ int main(int argc, char *argv[])
 {
     int ret = -1;
     int i = 0;
+    void *exit_result = NULL;
+    pthread_attr_t attr;
 
     pthread_mutex_init(&g_data.mutex, NULL);
+
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
     for (i = 0; i < THREAD_CNT; i++)
     {
@@ -144,9 +159,15 @@ int main(int argc, char *argv[])
         }
     }
 
-    sleep(2);
     printf("hello world\n");
+    sleep(1);
+    pthread_cancel(g_thread_info[0].tid);
+    pthread_cancel(g_thread_info[1].tid);
 
-    while(1);
+    ret = pthread_join(g_thread_info[0].tid, &exit_result);    
+    printf("ret: %d, result: %d\n", ret, (int)exit_result);
+    pthread_join(g_thread_info[1].tid, &exit_result);
+    printf("result: %d\n", (int)exit_result);    
+
     return 0;
 }
