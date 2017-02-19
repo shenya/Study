@@ -4,8 +4,11 @@
 #include <string.h>
 #include <errno.h>
 #include <pthread.h>
+#include <semaphore.h>
 
 #define THREAD_CNT 2
+
+#define USE_SEM 0
 
 typedef struct thread_info
 {
@@ -25,10 +28,30 @@ typedef struct manage_data
     link_node_t *link_list_tail;
     //lock
     pthread_mutex_t mutex;
+    sem_t sem;
     int num;
 } manage_data_t;
 
 manage_data_t g_data;
+
+void pthread_lock(void)
+{
+#ifndef USE_SEM
+    pthread_mutex_lock(&g_data.mutex);
+#else
+    sem_wait(&g_data.sem);
+#endif
+}
+
+void pthread_unlock(void)
+{
+#ifndef USE_SEM
+    printf("%s: not use sem\n", __FUNCTION__);
+    pthread_mutex_unlock(&g_data.mutex);
+#else
+    sem_post(&g_data.sem);
+#endif
+}
 
 link_node_t *link_list_init(void)
 {
@@ -117,14 +140,14 @@ void *func(void *arg)
     while (1)
     {
         sleep(1);
-        pthread_mutex_lock(&g_data.mutex);
+        pthread_lock();
         printf("th number: %d, number: %d\n", thread_number,
                 g_data.num++);
         if (g_data.num > 5)
         {
             flag = 1;
         }
-        pthread_mutex_unlock(&g_data.mutex);
+        pthread_unlock();
 
         if (flag)
         {
@@ -143,6 +166,7 @@ int main(int argc, char *argv[])
     pthread_attr_t attr;
 
     pthread_mutex_init(&g_data.mutex, NULL);
+    sem_init(&g_data.sem, 0, 1);
 
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
@@ -161,13 +185,18 @@ int main(int argc, char *argv[])
 
     printf("hello world\n");
     sleep(1);
-    pthread_cancel(g_thread_info[0].tid);
-    pthread_cancel(g_thread_info[1].tid);
+    //pthread_cancel(g_thread_info[0].tid);
+    //pthread_cancel(g_thread_info[1].tid);
 
     ret = pthread_join(g_thread_info[0].tid, &exit_result);    
     printf("ret: %d, result: %d\n", ret, (int)exit_result);
     pthread_join(g_thread_info[1].tid, &exit_result);
-    printf("result: %d\n", (int)exit_result);    
+    printf("result: %d\n", (int)exit_result);
+
+    //deinit
+    pthread_mutex_destroy(&g_data.mutex);
+    sem_destroy(&g_data.sem);
+    pthread_attr_destroy(&attr);
 
     return 0;
 }
