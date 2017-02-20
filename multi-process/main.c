@@ -8,7 +8,7 @@
 
 #define THREAD_CNT 2
 
-#define USE_SEM 0
+//#define USE_SEM 0
 
 typedef struct thread_info
 {
@@ -29,6 +29,7 @@ typedef struct manage_data
     //lock
     pthread_mutex_t mutex;
     sem_t sem;
+    pthread_cond_t cond;
     int num;
 } manage_data_t;
 
@@ -124,6 +125,77 @@ int link_list_delete_by_number(int number)
 
 }
 
+int cnt = 1;
+
+void *func_a(void *arg)
+{
+    int thread_number = 0;
+    int flag = 0;
+
+    if (NULL == arg)
+    {
+        printf("%s: Invalid arg\n", __FUNCTION__);
+        return;
+    }
+
+    thread_number = *((int *)arg);
+
+    for (cnt = 1; cnt < 10; cnt++)
+    {
+        pthread_lock();
+
+        if (cnt % 2 == 0)
+        {
+            pthread_cond_signal(&g_data.cond);
+        }
+        else
+        {
+            printf("th: %d, cnt: %d\n", thread_number, cnt);
+        }
+        if (cnt >= 9)
+        {
+            pthread_cond_signal(&g_data.cond);
+            pthread_unlock();
+            printf("%s: exit\n", __FUNCTION__);
+            pthread_exit((void *)cnt);
+        }
+
+        pthread_unlock();
+
+        sleep(1);
+    }
+
+}
+
+void *func_b(void *arg)
+{
+    int thread_number = 0;
+    int flag = 0;
+
+    if (NULL == arg)
+    {
+        printf("%s: Invalid arg\n", __FUNCTION__);
+        return;
+    }
+
+    thread_number = *((int *)arg);
+
+    while (1)
+    {
+        pthread_lock();
+
+        pthread_cond_wait(&g_data.cond, &g_data.mutex);
+        if (cnt >= 9)
+        {
+            printf("%s: exit\n", __FUNCTION__);
+            pthread_unlock();
+            pthread_exit((void *)cnt);
+        }
+        printf("th: %d, cnt: %d\n", thread_number, cnt);
+        pthread_unlock();
+    }
+}
+
 void *func(void *arg)
 {
     int thread_number = 0;
@@ -167,6 +239,7 @@ int main(int argc, char *argv[])
 
     pthread_mutex_init(&g_data.mutex, NULL);
     sem_init(&g_data.sem, 0, 1);
+    pthread_cond_init(&g_data.cond, NULL);
 
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
@@ -174,8 +247,17 @@ int main(int argc, char *argv[])
     for (i = 0; i < THREAD_CNT; i++)
     {
         g_thread_info[i].thread_number = i;
-        ret = pthread_create(&g_thread_info[i].tid, NULL, func,
-                &g_thread_info[i].thread_number);
+        if (0 == i)
+        {
+            ret = pthread_create(&g_thread_info[i].tid, NULL, func_a,
+                    &g_thread_info[i].thread_number);
+        }
+        else
+        {
+            ret = pthread_create(&g_thread_info[i].tid, NULL, func_b,
+                              &g_thread_info[i].thread_number);
+        }
+
         if (0 != ret)
         {
             printf("create failed\n");
